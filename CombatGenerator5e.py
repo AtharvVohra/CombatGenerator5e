@@ -85,7 +85,7 @@ class Enemy:
 	specialactions = {} # air/legendary
 	abilityrecharge = 0
 
-	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT):
+	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA):
 		# init variables here
 		if ENCOUNTER_DIFFICULTY == 1:
 			self.MIN = 2
@@ -115,32 +115,34 @@ class Enemy:
 			sys.exit()
 		self.generate_info(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
 		self.generate_stats(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, STAT)
-		self.generate_actions(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
+		self.generate_actions(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA)
 		return
 
-	def generate_actions(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
+	def generate_actions(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA):
 		# generate actions, special actions, BAs, reactions and recharge timers
-		if ('WIS' or 'CHA' or 'INT') in self.goodstats:
-			spellcastchance = random.random()
-			if spellcastchance <= 0.5:
-				self.spellcaster = True
-				self.maxslotlevel = random.randint(math.floor(AVG_PARTY_LEVEL/3), math.floor(AVG_PARTY_LEVEL/2))
-				self.numberofspells = random.randint(self.MIN, self.MAX)
-				self.actions[random.choice(list(Schools)).value + ' magic spellcasting'] = "Can cast " + self.numberofspells + " at max slot level + " + self.maxslotlevel
-		if ('STR' or 'DEX') in self.goodstats:
-
+		if 'WIS' in self.goodstats or 'CHA' in self.goodstats or 'INT' in self.goodstats:
+			# spellcastchance = random.random()
+			# if spellcastchance <= 0.5:
+			self.spellcaster = True
+			self.maxslotlevel = ENCOUNTER_DIFFICULTY + random.randint(math.floor(AVG_PARTY_LEVEL/3), math.floor(AVG_PARTY_LEVEL/2))
+			self.numberofspells = random.randint(self.MIN, self.MAX) + ENCOUNTER_DIFFICULTY
+			self.actions[random.choice(list(Schools)).value + ' magic spellcasting'] = "Can cast " + str(self.numberofspells) + " spells of school at max slot level " + str(self.maxslotlevel)
+		#if ('STR' or 'DEX') in self.goodstats:
+		diceresults = self.dice_picker(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
+		self.actions['Attack Action'] = 'This creature has ' + str(self.multiattack) + ' multiattacks. To hit: Whatever attack stat you choose + ' + str(self.profbonus) + '. Each attack does ' + diceresults[0] + diceresults[1] + ' + ability modifier (that is used to attack) damage.' 
+		
+		#TODO: GENERATE ACTION ORIENTED ABILITIES NEXT
+		print(self.actions)
 
 		return
 
 	def generate_stats(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, STAT):
 		# generate profbonus and statmods
-		profbonus = random.randint(self.MIN, self.MAX) + ENCOUNTER_DIFFICULTY
+		self.profbonus = random.randint(self.MIN, self.MAX) + ENCOUNTER_DIFFICULTY
 		statlist = STAT
 		random.shuffle(statlist)
 		self.goodstats = [statlist[0], statlist[1], statlist[2]] # lol i used to be a good programmer some time ago
 		self.badstats = [statlist[3], statlist[4], statlist[5]] # note for self use split operator
-		print(self.goodstats)
-		print(self.badstats)
 
 		for stat in self.goodstats:
 			mod = random.randint(self.MIN, self.MAX)
@@ -177,18 +179,29 @@ class Enemy:
 		print(self.immunities)
 		return
 
-def dice_picker(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
+	def dice_picker(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY): # returns two strings
 	# return no. of dice and dice type based on encounter difficulty and scaled for avg party level
 	# encounter difficulty is tied to number of dice, and dice type to avg party level
-	
-	return
+		numberofdice = random.randint(math.ceil(ENCOUNTER_DIFFICULTY/2), ENCOUNTER_DIFFICULTY)
+		if 'STR' in self.goodstats:
+			dicetype = random.choice([Dice.d8.value, Dice.d10.value, Dice.d12.value])
+		elif 'DEX' in self.goodstats:
+			dicetype = random.choice([Dice.d6.value, Dice.d8.value])
+		else:
+			dicetype = random.choice([Dice.d4.value, Dice.d6.value])
+			numberofdice = 1
+		
+		# numberofdice = random.randint(1, ENCOUNTER_DIFFICULTY-1)
+
+		return str(numberofdice), dicetype
+
 
 def main(): 
 	# fetch user prefs for enemies here and accordingly make enemies
 	print("hello!")
 	ENCOUNTER_DIFFICULTY = int(input("How difficult is this creature? 1 = Easy, 2 = Medium, 3 = Hard, 4 = ???: "))
 	AVG_PARTY_LEVEL = int(input("Enter the avg party level, rounded up to the nearest integer: "))
-	enemy = Enemy(ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT)
+	enemy = Enemy(ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA)
 	print(enemy.__dict__)
 
 if __name__ == '__main__':
