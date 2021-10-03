@@ -3,7 +3,11 @@ from pprint import pprint
 from enum import Enum
 
 RANDOM_WORDS = ["altar", "corpse", "monster", "fire", "lightning", "water", "lava", "garbage", "venom", "gas", "ice", "power", "scrolls", "potions", "weapons", "statuses", "friendship", "persuasion", "tree", "stone", "void", "sand", "wind", "directions", "wild magic", "dragons", "kobolds", "alcohol", "food", "dreams", "time", "space", "portals", "spell slots", "rope", "sunlight", "moonlight"]
-
+SPECIAL = ["Teleport", "Spawn Adds", "Change the battlefield to advantage", "Use Damage dealing ability", "Drain resource", "Sacrifice Resource", "Gain Theme Relevant Buff", "Apply Theme Relevant Debuff", "Take a stance/charge"]
+DESPRERATION = ["Apply Party Wide Debuff", "Do Party Wide Damage", "Use battlefield to run away", "cast most powerful spell available if spellcaster, else multiattack", "Use another special action but more dangerous", "Self-destruct"]
+REACTIONS = ["Parry/Riposte", "Reflect some damage", "Cast a low level spell", "Sacrifice Resource", "Gain Resource"]
+# effectively every time a special action is generated, it'll chain once by randomly picking another entry in the list
+# that way each entry is at least vaguely cohesive with another action, narratively
 class Dice(Enum):
 	d4 = "d4"
 	d6 = "d6"
@@ -79,13 +83,12 @@ class Enemy:
 	# turn based
 	multiattack = 0
 	actions = {}
-	bonusactions = {}
 	reactions = {}
 
 	specialactions = {} # air/legendary
 	abilityrecharge = 0
 
-	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA):
+	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS):
 		# init variables here
 		if ENCOUNTER_DIFFICULTY == 1:
 			self.MIN = 2
@@ -115,10 +118,10 @@ class Enemy:
 			sys.exit()
 		self.generate_info(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
 		self.generate_stats(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, STAT)
-		self.generate_actions(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA)
+		self.generate_actions(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA, SPECIAL, REACTIONS)
 		return
 
-	def generate_actions(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA):
+	def generate_actions(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA, SPECIAL, REACTIONS):
 		# generate actions, special actions, BAs, reactions and recharge timers
 		if 'WIS' in self.goodstats or 'CHA' in self.goodstats or 'INT' in self.goodstats:
 			# spellcastchance = random.random()
@@ -132,6 +135,39 @@ class Enemy:
 		self.actions['Attack Action'] = 'This creature has ' + str(self.multiattack) + ' multiattacks. To hit: Whatever attack stat you choose + ' + str(self.profbonus) + '. Each attack does ' + diceresults[0] + diceresults[1] + ' + ability modifier (that is used to attack) damage.' 
 		
 		#TODO: GENERATE ACTION ORIENTED ABILITIES NEXT
+		# figure out abstraction level of action oriented abilities - more action, RA, LA
+		# possible actions can include stuff like status effects induction, dmg, aid the lair things
+		# Generally the action oreiented abiltiies should be based on saving DC
+		# might need to pick a couple of words from the random list and then LA -> aid -> word
+		# Any special action can be on a recharge timer (except reactions)
+		# need to base somee reactions/LAs off of the goodstats
+		# only LAs have guaranteed status infliction, actions have chance of
+		# what about actions that include spawning adds, tp, gain buff, debuff, parry reactions?
+		# prolly need high level abstraction lists of possible outcomes for all these things
+		# chance of having more than 1 special action is dependent on encounter probability (keep going till false?)
+		# these creatures should have special actions that build on each other, perhaps with words that are related?
+		reactionchance = random.random() # chance to have a reaction
+		if reactionchance <= self.PROBABILITY:
+			self.actions['Reaction'] = 'Reaction: This creature can ' + random.choice(REACTIONS) + ' once per round'
+
+		# grant at least one special actions
+		i = 1
+		tempspeciallist = SPECIAL
+		randomspecial = random.choice(tempspeciallist)
+		self.abilityrecharge = random.randint(1, 3)
+		self.actions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
+		i += 1
+		tempspeciallist.remove(randomspecial)
+		while(True):
+			morespecialchance = random.random()
+			if morespecialchance <= self.PROBABILITY:
+				randomspecial = random.choice(tempspeciallist)
+				self.actions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
+				i += 1
+				tempspeciallist.remove(randomspecial)
+			else:
+				break
+		# now pick a desperation actionvv
 		print(self.actions)
 
 		return
@@ -201,7 +237,7 @@ def main():
 	print("hello!")
 	ENCOUNTER_DIFFICULTY = int(input("How difficult is this creature? 1 = Easy, 2 = Medium, 3 = Hard, 4 = ???: "))
 	AVG_PARTY_LEVEL = int(input("Enter the avg party level, rounded up to the nearest integer: "))
-	enemy = Enemy(ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA)
+	enemy = Enemy(ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS)
 	print(enemy.__dict__)
 
 if __name__ == '__main__':
