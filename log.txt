@@ -1,7 +1,32 @@
-hello!
-How difficult is this creature? 1 = Easy, 2 = Medium, 3 = Hard, 4 = ???: Enter the avg party level, rounded up to the nearest integer: ['fire', 'force', 'thunder', 'piercing', 'radiant', 'acid']
-['acid']
-['force']
-{'CHA': 7, 'DEX': 7, 'CON': 7, 'STR': -1, 'WIS': -1, 'INT': -1}
-{'evocation magic spellcasting': 'Can cast 11 spells of school at max slot level 4', 'Attack Action': 'This creature has 3 multiattacks. To hit: Whatever attack stat you choose + 12. Each attack does 2d6 + ability modifier (that is used to attack) damage.', 'Reaction': 'Reaction: This creature can Cast a low level spell once per round', 'Special Action 1': 'This creature may Apply Theme Relevant Debuff on an ability cooldown of 1 rounds'}
-{'MIN': 7, 'MAX': 9, 'PROBABILITY': 0.2, 'multiattack': 3, 'hp': 84, 'DC': 13, 'move': 15, 'profbonus': 12, 'goodstats': ['CHA', 'DEX', 'CON'], 'badstats': ['STR', 'WIS', 'INT'], 'spellcaster': True, 'maxslotlevel': 4, 'numberofspells': 11, 'abilityrecharge': 1}
+I heard ya tryna make a creature :3
+
+How difficult is this creature? 1 = Easy, 2 = Medium, 3 = Hard, 4 = ???: Enter the avg party level, rounded up to the nearest integer: 
+Here is a generated stat block, feel free to modfy it and use it as a crafting constraint vs. an out of book guideline to follow:
+
+
+
+Hitpoints: 72
+Spell Save DC and DC for other relevant abilities: 13
+For attacks and ability checks, you may use proficciency bonus of: 8
+This creature's movement speed is: 20 ft.
+This creature is a spellcaster... or some sort
+
+This is the creature's stat mods (instead of scores):
+DEX: 7
+WIS: 4
+CHA: 5
+INT: 1
+STR: 0
+CON: 1
+
+This creature is resistant to: ['fire']
+This creature is vulnerable to: ['psychic', 'acid']
+
+List of creature's ACTIONS: 
+For an attack action, this creature can make a maximum of 2 attacks
+necromancy magic spellcasting: Can cast 6 spells of school at max slot level 5
+Attack Action: This creature has 2 multiattacks. To hit: Whatever attack stat you choose + 8. Each attack does 1d6 + ability modifier (that is used to attack) damage.
+
+
+List of Special Actions: 
+Special Action 1: This creature may Drain resource on an ability cooldown of 2 rounds

@@ -85,7 +85,7 @@ class Enemy:
 	actions = {}
 	reactions = {}
 
-	specialactions = {} # air/legendary
+	specialactions = {} # lair/legendary
 	abilityrecharge = 0
 
 	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS):
@@ -155,20 +155,20 @@ class Enemy:
 		tempspeciallist = SPECIAL
 		randomspecial = random.choice(tempspeciallist)
 		self.abilityrecharge = random.randint(1, 3)
-		self.actions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
+		self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
 		i += 1
 		tempspeciallist.remove(randomspecial)
 		while(True):
 			morespecialchance = random.random()
 			if morespecialchance <= self.PROBABILITY:
 				randomspecial = random.choice(tempspeciallist)
-				self.actions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
+				self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
 				i += 1
 				tempspeciallist.remove(randomspecial)
 			else:
 				break
-		# now pick a desperation actionvv
-		print(self.actions)
+		# now pick a desperation action TODO
+		# print(self.actions)
 
 		return
 
@@ -186,7 +186,7 @@ class Enemy:
 		for stat in self.badstats:
 			mod = random.randint(self.MIN, self.MAX) - random.randint(self.MIN, self.MAX)
 			self.statmods[stat] = mod
-		print(self.statmods)
+		# print(self.statmods)
 		return
 
 	def generate_info(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
@@ -210,9 +210,6 @@ class Enemy:
 				self.immunities.append(random.choice(list(DamageType)).value)
 			self.immunities.append(random.choice(list(DamageType)).value)
 
-		print(self.resistances)
-		print(self.vuls)
-		print(self.immunities)
 		return
 
 	def dice_picker(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY): # returns two strings
@@ -234,11 +231,50 @@ class Enemy:
 
 def main(): 
 	# fetch user prefs for enemies here and accordingly make enemies
-	print("hello!")
+	print("I heard ya tryna make a creature :3")
+	print()
 	ENCOUNTER_DIFFICULTY = int(input("How difficult is this creature? 1 = Easy, 2 = Medium, 3 = Hard, 4 = ???: "))
 	AVG_PARTY_LEVEL = int(input("Enter the avg party level, rounded up to the nearest integer: "))
 	enemy = Enemy(ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS)
-	print(enemy.__dict__)
+	print()
+	print("Here is a generated stat block, feel free to modfy it and use it as a crafting constraint vs. an out of book guideline to follow:")
+	print('\n\n')
+	print("Hitpoints: " + str(enemy.hp))
+	print("Spell Save DC and DC for other relevant abilities: " + str(enemy.DC))
+	print("For attacks and ability checks, you may use proficciency bonus of: " + str(enemy.profbonus))
+	print("This creature's movement speed is: " + str(enemy.move) + " ft.")
+	if enemy.spellcaster:
+		print("This creature is a spellcaster... of some sort")
+		#print("The max level of spell slot is: " + str(enemy.maxslotlevel))
+		#print("The max number of spells this creature can cast is: " + str(enemy.numberofspells))
+	else:
+		print("This creature doesn't cast spells, but they can do other cool things!")
+	print()
+	print("This is the creature's stat mods (instead of scores):")
+	for key in enemy.statmods:
+		print(str(key) + ": " + str(enemy.statmods[key]))
+	print()
+	if enemy.resistances:
+		print("This creature is resistant to: " + str(enemy.resistances))
+	if enemy.vuls:
+		print("This creature is vulnerable to: " + str(enemy.vuls))
+	if enemy.immunities:
+		print("This creature is immune to: " + str(enemy.immunities))
+	print()
+	print("List of creature's ACTIONS: ")
+	print("For an attack action, this creature can make a maximum of " + str(enemy.multiattack) + " attacks")
+	for key in enemy.actions:
+		print(str(key) + ": " + str(enemy.actions[key]))
+	print()
+	if enemy.reactions:
+		print("List of Reactions:")
+	for key in enemy.reactions:
+		print(str(key) + ": " + str(enemy.reactions[key]))
+	print()
+	print("List of Special Actions: ")
+	for key in enemy.specialactions:
+		print(str(key) + ": " + str(enemy.specialactions[key]))
+	# print(enemy.__dict__)
 
 if __name__ == '__main__':
 	main()
