@@ -5,37 +5,39 @@ Here is a generated stat block, feel free to modfy it and use it as a crafting c
 
 
 
-Hitpoints: 216
+Hitpoints: 126
 Armor Class: 16
-Spell Save DC and DC for other relevant abilities: 18
-For attacks and ability checks, you may use proficciency bonus of: 12
-This creature's movement speed is: 30 ft.
+Spell Save DC and DC for other relevant abilities: 15
+For attacks and ability checks, you may use proficiency bonus of: 12
+This creature's movement speed is: 45 ft.
 This creature is a spellcaster... of some sort
 
 This is the creature's stat mods (instead of scores):
-INT: 9
-STR: 7
-DEX: 8
-CHA: -1
-CON: -1
-WIS: 1
+CHA: 9
+CON: 8
+DEX: 9
+INT: -1
+STR: -1
+WIS: 0
 
-This creature is resistant to: ['poison']
-This creature is vulnerable to: ['slashing', 'radiant']
+This creature is resistant to: ['piercing']
+This creature is vulnerable to: ['piercing']
+This creature is immune to: ['psychic', 'thunder']
 
 List of creature's Actions: 
 For an attack action, this creature can make a maximum of 3 attacks
-transmuation magic spellcasting: Can cast 11 spells of school at max slot level 5
-Attack Action: This creature has 3 multiattacks. To hit: Whatever attack stat you choose + 12. Each attack does 3d12 + ability modifier (that is used to attack) damage.
+necromancy magic spellcasting: Can cast 12 spells of school at max slot level 6
+Attack Action: This creature has 3 multiattacks. To hit: Whatever attack stat you choose + 12. Each attack does 3d8 + ability modifier (that is used to attack) damage.
 
 
 List of Special Actions (taken after a player turn or can be used as bonus action): 
-Special Action 1: This creature may Teleport on an ability cooldown of 1 rounds
-Special Action 2: This creature may Take a stance/charge on an ability cooldown of 3 rounds
-List of desperation actions that the creature will take when desperate
-Desperation Action 1: This creature may cast most powerful spell available if spellcaster, else multiattack once per combat
+Special Action 1: This creature may Drain resource on an ability cooldown of 3 rounds
+Special Action 2: This creature may Gain Theme Relevant Buff on an ability cooldown of 2 rounds
+
+List of desperation actions that the creature will take when desperate:
+Desperation Action 1: This creature may Do Party Wide Damage once per combat
 
 Lastly here are some random words to help you improvise:
-rope
-portals
-lava
+dreams
+dreams
+fire

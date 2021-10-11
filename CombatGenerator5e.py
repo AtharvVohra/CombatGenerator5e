@@ -3,8 +3,8 @@ from pprint import pprint
 from enum import Enum
 
 RANDOM_WORDS = ["altar", "corpse", "monster", "fire", "lightning", "water", "lava", "garbage", "venom", "gas", "ice", "power", "scrolls", "potions", "weapons", "statuses", "friendship", "persuasion", "tree", "stone", "void", "sand", "wind", "directions", "wild magic", "dragons", "kobolds", "alcohol", "food", "dreams", "time", "space", "portals", "spell slots", "rope", "sunlight", "moonlight"]
-SPECIAL = ["Teleport", "Spawn Adds", "Change the battlefield to advantage", "Use Damage dealing ability", "Drain resource", "Sacrifice Resource", "Gain Theme Relevant Buff", "Apply Theme Relevant Debuff", "Take a stance/charge"]
-DESPRERATION = ["Apply Party Wide Debuff", "Do Party Wide Damage", "Use battlefield to run away", "cast most powerful spell available if spellcaster, else multiattack", "Use another special action but more dangerous", "Self-destruct"]
+SPECIAL = ["Teleport", "Spawn Adds", "Change the battlefield to advantage", "Use Damage dealing ability", "Drain resource", "Sacrifice Resource", "Gain Theme Relevant Buff", "Apply Theme Relevant Debuff", "Take a stance/charge", "Empower next action"]
+DESPRERATION = ["Apply Party Wide Debuff", "Do Party Wide Damage", "Use battlefield to run away", "cast most powerful spell available if spellcaster, else multiattack", "Use another special action but more dangerous", "Self-destruct", "Spawn Lots of Adds", "Empower next action"]
 REACTIONS = ["Parry/Riposte", "Reflect some damage", "Cast a low level spell", "Sacrifice Resource", "Gain Resource"]
 # effectively every time a special action is generated, it'll chain once by randomly picking another entry in the list
 # that way each entry is at least vaguely cohesive with another action, narratively
@@ -149,7 +149,7 @@ class Enemy:
 		# these creatures should have special actions that build on each other, perhaps with words that are related?
 		reactionchance = random.random() # chance to have a reaction
 		if reactionchance <= self.PROBABILITY:
-			self.actions['Reaction'] = 'Reaction: This creature can ' + random.choice(REACTIONS) + ' once per round'
+			self.actions['Reaction'] = 'This creature can ' + random.choice(REACTIONS) + ' once per round'
 
 		# grant at least one special actions
 		i = 1
@@ -204,10 +204,11 @@ class Enemy:
 
 	def generate_info(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
 		self.hp = random.randint(self.MIN, self.MAX) * AVG_PARTY_LEVEL * ENCOUNTER_DIFFICULTY
-		self.DC = 8 + ENCOUNTER_DIFFICULTY + (random.randint(self.MIN, self.MAX))
+		self.DC = 8 + math.ceil(random.randint(self.MIN, self.MAX)/2) + ENCOUNTER_DIFFICULTY
 		# need to change above formulae, they break down at higher levels
 		self.move = random.choice([self.move + 5*ENCOUNTER_DIFFICULTY, self.move - 5*ENCOUNTER_DIFFICULTY, self.move])
 		self.AC = 8 + random.randint(self.MIN, self.MAX)
+
 		for data in DamageType:
 			roll_res = random.random()
 			roll_vul = random.random()
@@ -255,7 +256,7 @@ def main():
 	print("Hitpoints: " + str(enemy.hp))
 	print("Armor Class: " + str(enemy.AC))
 	print("Spell Save DC and DC for other relevant abilities: " + str(enemy.DC))
-	print("For attacks and ability checks, you may use proficciency bonus of: " + str(enemy.profbonus))
+	print("For attacks and ability checks, you may use proficiency bonus of: " + str(enemy.profbonus))
 	print("This creature's movement speed is: " + str(enemy.move) + " ft.")
 	if enemy.spellcaster:
 		print("This creature is a spellcaster... of some sort")
@@ -289,14 +290,18 @@ def main():
 	for key in enemy.specialactions:
 		print(str(key) + ": " + str(enemy.specialactions[key]))
 
-	print("List of desperation actions that the creature will take when desperate")
+	print()
+	print("List of desperation actions that the creature will take when desperate:")
 	for key in enemy.desperationactions:
 		print(str(key) + ": " + str(enemy.desperationactions[key]))
 
 	print()
 	print("Lastly here are some random words to help you improvise:")
+	tempranlist = RANDOM_WORDS
 	for i in range(1, 4):
-		print(random.choice(RANDOM_WORDS))
+		ranword = random.choice(tempranlist)
+		print(ranword)
+		tempranlist.remove(ranword)
 
 	# print(enemy.__dict__)
 
