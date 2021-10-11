@@ -7,26 +7,32 @@ Here is a generated stat block, feel free to modfy it and use it as a crafting c
 
 Hitpoints: 72
 Spell Save DC and DC for other relevant abilities: 13
-For attacks and ability checks, you may use proficciency bonus of: 8
+For attacks and ability checks, you may use proficciency bonus of: 6
 This creature's movement speed is: 20 ft.
-This creature is a spellcaster... or some sort
+This creature is a spellcaster... of some sort
 
 This is the creature's stat mods (instead of scores):
-DEX: 7
-WIS: 4
-CHA: 5
-INT: 1
-STR: 0
-CON: 1
+DEX: 4
+WIS: 7
+INT: 7
+STR: 2
+CHA: 0
+CON: -2
 
-This creature is resistant to: ['fire']
-This creature is vulnerable to: ['psychic', 'acid']
+This creature is resistant to: ['piercing', 'acid']
+This creature is vulnerable to: ['bludgeoning', 'necrotic']
+This creature is immune to: ['force', 'fire']
 
 List of creature's ACTIONS: 
 For an attack action, this creature can make a maximum of 2 attacks
-necromancy magic spellcasting: Can cast 6 spells of school at max slot level 5
-Attack Action: This creature has 2 multiattacks. To hit: Whatever attack stat you choose + 8. Each attack does 1d6 + ability modifier (that is used to attack) damage.
+abjuration magic spellcasting: Can cast 8 spells of school at max slot level 5
+Attack Action: This creature has 2 multiattacks. To hit: Whatever attack stat you choose + 6. Each attack does 1d6 + ability modifier (that is used to attack) damage.
 
 
 List of Special Actions: 
-Special Action 1: This creature may Drain resource on an ability cooldown of 2 rounds
+Special Action 1: This creature may Change the battlefield to advantage on an ability cooldown of 2 rounds
+
+Lastly here are some random words to help you improvise:
+food
+kobolds
+weapons

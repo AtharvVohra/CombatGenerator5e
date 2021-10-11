@@ -69,6 +69,7 @@ class Enemy:
 	name = ""
 	hp = 0
 	DC = 0
+	AC = 0
 	spellcaster = False
 	maxslotlevel = 0
 	numberofspells = 0
@@ -154,6 +155,10 @@ class Enemy:
 		i = 1
 		tempspeciallist = SPECIAL
 		randomspecial = random.choice(tempspeciallist)
+		self.abilityrecharge = random.randint(0, 3)
+		self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
+		i += 1
+		randomspecial = random.choice(tempspeciallist)
 		self.abilityrecharge = random.randint(1, 3)
 		self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
 		i += 1
@@ -179,6 +184,7 @@ class Enemy:
 		random.shuffle(statlist)
 		self.goodstats = [statlist[0], statlist[1], statlist[2]] # lol i used to be a good programmer some time ago
 		self.badstats = [statlist[3], statlist[4], statlist[5]] # note for self use split operator
+		self.AC = 10 + random.randint(, self.MIN, self.MAX)
 
 		for stat in self.goodstats:
 			mod = random.randint(self.MIN, self.MAX)
@@ -240,6 +246,7 @@ def main():
 	print("Here is a generated stat block, feel free to modfy it and use it as a crafting constraint vs. an out of book guideline to follow:")
 	print('\n\n')
 	print("Hitpoints: " + str(enemy.hp))
+	print("Armor Class: " + str(enemy.AC))
 	print("Spell Save DC and DC for other relevant abilities: " + str(enemy.DC))
 	print("For attacks and ability checks, you may use proficciency bonus of: " + str(enemy.profbonus))
 	print("This creature's movement speed is: " + str(enemy.move) + " ft.")
@@ -261,7 +268,7 @@ def main():
 	if enemy.immunities:
 		print("This creature is immune to: " + str(enemy.immunities))
 	print()
-	print("List of creature's ACTIONS: ")
+	print("List of creature's Actions: ")
 	print("For an attack action, this creature can make a maximum of " + str(enemy.multiattack) + " attacks")
 	for key in enemy.actions:
 		print(str(key) + ": " + str(enemy.actions[key]))
@@ -271,9 +278,14 @@ def main():
 	for key in enemy.reactions:
 		print(str(key) + ": " + str(enemy.reactions[key]))
 	print()
-	print("List of Special Actions: ")
+	print("List of Special Actions (taken after a player turn!): ")
 	for key in enemy.specialactions:
 		print(str(key) + ": " + str(enemy.specialactions[key]))
+	print()
+	print("Lastly here are some random words to help you improvise:")
+	for i in range(1, 4):
+		print(random.choice(RANDOM_WORDS))
+
 	# print(enemy.__dict__)
 
 if __name__ == '__main__':
