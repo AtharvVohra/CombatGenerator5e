@@ -85,8 +85,8 @@ class Enemy:
 	multiattack = 0
 	actions = {}
 	reactions = {}
-
-	specialactions = {} # lair/legendary
+	desperationactions = {}
+	specialactions = {} # lair/legendary/bonus
 	abilityrecharge = 0
 
 	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS):
@@ -97,7 +97,7 @@ class Enemy:
 			self.PROBABILITY = 0.05
 			self.multiattack = 1
 		elif ENCOUNTER_DIFFICULTY == 2:
-			self.MIN = 4
+			self.MIN = 5
 			self.MAX = 7
 			self.PROBABILITY = 0.1
 			roll_oof = random.random()
@@ -158,11 +158,19 @@ class Enemy:
 		self.abilityrecharge = random.randint(0, 3)
 		self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
 		i += 1
+		tempspeciallist.remove(randomspecial)
 		randomspecial = random.choice(tempspeciallist)
 		self.abilityrecharge = random.randint(1, 3)
 		self.specialactions['Special Action ' + str(i)] = 'This creature may ' + str(randomspecial) + ' on an ability cooldown of ' + str(self.abilityrecharge) + ' rounds'
 		i += 1
 		tempspeciallist.remove(randomspecial)
+
+		j = 1
+		tempdesplist = DESPRERATION
+		randomdesp = random.choice(tempdesplist)
+		self.desperationactions['Desperation Action ' + str(j)] = 'This creature may ' + str(randomdesp) + ' once per combat'
+
+
 		while(True):
 			morespecialchance = random.random()
 			if morespecialchance <= self.PROBABILITY:
@@ -184,7 +192,6 @@ class Enemy:
 		random.shuffle(statlist)
 		self.goodstats = [statlist[0], statlist[1], statlist[2]] # lol i used to be a good programmer some time ago
 		self.badstats = [statlist[3], statlist[4], statlist[5]] # note for self use split operator
-		self.AC = 10 + random.randint(, self.MIN, self.MAX)
 
 		for stat in self.goodstats:
 			mod = random.randint(self.MIN, self.MAX)
@@ -197,10 +204,10 @@ class Enemy:
 
 	def generate_info(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
 		self.hp = random.randint(self.MIN, self.MAX) * AVG_PARTY_LEVEL * ENCOUNTER_DIFFICULTY
-		self.DC = 8 + math.ceil((AVG_PARTY_LEVEL/2)) + ENCOUNTER_DIFFICULTY
+		self.DC = 8 + ENCOUNTER_DIFFICULTY + (random.randint(self.MIN, self.MAX))
 		# need to change above formulae, they break down at higher levels
 		self.move = random.choice([self.move + 5*ENCOUNTER_DIFFICULTY, self.move - 5*ENCOUNTER_DIFFICULTY, self.move])
-
+		self.AC = 8 + random.randint(self.MIN, self.MAX)
 		for data in DamageType:
 			roll_res = random.random()
 			roll_vul = random.random()
@@ -278,9 +285,14 @@ def main():
 	for key in enemy.reactions:
 		print(str(key) + ": " + str(enemy.reactions[key]))
 	print()
-	print("List of Special Actions (taken after a player turn!): ")
+	print("List of Special Actions (taken after a player turn or can be used as bonus action): ")
 	for key in enemy.specialactions:
 		print(str(key) + ": " + str(enemy.specialactions[key]))
+
+	print("List of desperation actions that the creature will take when desperate")
+	for key in enemy.desperationactions:
+		print(str(key) + ": " + str(enemy.desperationactions[key]))
+
 	print()
 	print("Lastly here are some random words to help you improvise:")
 	for i in range(1, 4):

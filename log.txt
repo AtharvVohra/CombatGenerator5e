@@ -5,34 +5,37 @@ Here is a generated stat block, feel free to modfy it and use it as a crafting c
 
 
 
-Hitpoints: 72
-Spell Save DC and DC for other relevant abilities: 13
-For attacks and ability checks, you may use proficciency bonus of: 6
-This creature's movement speed is: 20 ft.
+Hitpoints: 216
+Armor Class: 16
+Spell Save DC and DC for other relevant abilities: 18
+For attacks and ability checks, you may use proficciency bonus of: 12
+This creature's movement speed is: 30 ft.
 This creature is a spellcaster... of some sort
 
 This is the creature's stat mods (instead of scores):
-DEX: 4
-WIS: 7
-INT: 7
-STR: 2
-CHA: 0
-CON: -2
+INT: 9
+STR: 7
+DEX: 8
+CHA: -1
+CON: -1
+WIS: 1
 
-This creature is resistant to: ['piercing', 'acid']
-This creature is vulnerable to: ['bludgeoning', 'necrotic']
-This creature is immune to: ['force', 'fire']
+This creature is resistant to: ['poison']
+This creature is vulnerable to: ['slashing', 'radiant']
 
-List of creature's ACTIONS: 
-For an attack action, this creature can make a maximum of 2 attacks
-abjuration magic spellcasting: Can cast 8 spells of school at max slot level 5
-Attack Action: This creature has 2 multiattacks. To hit: Whatever attack stat you choose + 6. Each attack does 1d6 + ability modifier (that is used to attack) damage.
+List of creature's Actions: 
+For an attack action, this creature can make a maximum of 3 attacks
+transmuation magic spellcasting: Can cast 11 spells of school at max slot level 5
+Attack Action: This creature has 3 multiattacks. To hit: Whatever attack stat you choose + 12. Each attack does 3d12 + ability modifier (that is used to attack) damage.
 
 
-List of Special Actions: 
-Special Action 1: This creature may Change the battlefield to advantage on an ability cooldown of 2 rounds
+List of Special Actions (taken after a player turn or can be used as bonus action): 
+Special Action 1: This creature may Teleport on an ability cooldown of 1 rounds
+Special Action 2: This creature may Take a stance/charge on an ability cooldown of 3 rounds
+List of desperation actions that the creature will take when desperate
+Desperation Action 1: This creature may cast most powerful spell available if spellcaster, else multiattack once per combat
 
 Lastly here are some random words to help you improvise:
-food
-kobolds
-weapons
+rope
+portals
+lava
