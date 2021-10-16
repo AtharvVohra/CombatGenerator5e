@@ -8,6 +8,7 @@ DESPRERATION = ["Apply Party Wide Debuff", "Do Party Wide Damage", "Use battlefi
 REACTIONS = ["Parry/Riposte", "Reflect some damage", "Cast a low level spell", "Sacrifice Resource", "Gain Resource"]
 # effectively every time a special action is generated, it'll chain once by randomly picking another entry in the list
 # that way each entry is at least vaguely cohesive with another action, narratively
+# adding more verb-adjective pairs as we go along
 class Dice(Enum):
 	d4 = "d4"
 	d6 = "d6"
@@ -73,10 +74,10 @@ class Enemy:
 	spellcaster = False
 	maxslotlevel = 0
 	numberofspells = 0
-	statmods = {} #empty dictionary to be generated using STAT[]
+	statmods = {} # empty dictionary to be generated using STAT[]
 	goodstats = []
 	badstats = []
-	profbonus = 0
+	profbonus = 0 # note to self: might need to fix this calculation, too stronk atm?
 	move = 30
 	resistances = []
 	vuls = []
@@ -85,12 +86,16 @@ class Enemy:
 	multiattack = 0
 	actions = {}
 	reactions = {}
-	desperationactions = {}
-	specialactions = {} # lair/legendary/bonus
+	desperationactions = {} # how does the creature respond to player wincons? low health?
+	specialactions = {} # lair/legendary/bonus actions
 	abilityrecharge = 0
 
 	def __init__(self, ENCOUNTER_DIFFICULTY, AVG_PARTY_LEVEL, STAT, RANGE, AREA, SPECIAL, REACTIONS):
 		# init variables here
+		# change these values to balance encounters based on your party's composition
+		# self.PROB dictates probabilities to beat in order to generate special actions, resistances, imms etc.
+		# reduce to make encounter easier
+		# MIN, MAX -> static int range for calculations, lower both to make generated encounters easier, vice versa
 		if ENCOUNTER_DIFFICULTY == 1:
 			self.MIN = 2
 			self.MAX = 4
@@ -120,38 +125,28 @@ class Enemy:
 		self.generate_info(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
 		self.generate_stats(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, STAT)
 		self.generate_actions(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA, SPECIAL, REACTIONS)
+
 		return
 
 	def generate_actions(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, RANGE, AREA, SPECIAL, REACTIONS):
 		# generate actions, special actions, BAs, reactions and recharge timers
 		if 'WIS' in self.goodstats or 'CHA' in self.goodstats or 'INT' in self.goodstats:
 			# spellcastchance = random.random()
-			# if spellcastchance <= 0.5:
+			# if spellcastchance <= 0.5: What if spellcasting was a chance?
 			self.spellcaster = True
 			self.maxslotlevel = ENCOUNTER_DIFFICULTY + random.randint(math.floor(AVG_PARTY_LEVEL/3), math.floor(AVG_PARTY_LEVEL/2))
 			self.numberofspells = random.randint(self.MIN, self.MAX) + ENCOUNTER_DIFFICULTY
 			self.actions[random.choice(list(Schools)).value + ' magic spellcasting'] = "Can cast " + str(self.numberofspells) + " spells of school at max slot level " + str(self.maxslotlevel)
-		#if ('STR' or 'DEX') in self.goodstats:
+	
 		diceresults = self.dice_picker(AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY)
 		self.actions['Attack Action'] = 'This creature has ' + str(self.multiattack) + ' multiattacks. To hit: Whatever attack stat you choose + ' + str(self.profbonus) + '. Each attack does ' + diceresults[0] + diceresults[1] + ' + ability modifier (that is used to attack) damage.' 
 		
-		#TODO: GENERATE ACTION ORIENTED ABILITIES NEXT
-		# figure out abstraction level of action oriented abilities - more action, RA, LA
-		# possible actions can include stuff like status effects induction, dmg, aid the lair things
-		# Generally the action oreiented abiltiies should be based on saving DC
-		# might need to pick a couple of words from the random list and then LA -> aid -> word
-		# Any special action can be on a recharge timer (except reactions)
-		# need to base somee reactions/LAs off of the goodstats
-		# only LAs have guaranteed status infliction, actions have chance of
-		# what about actions that include spawning adds, tp, gain buff, debuff, parry reactions?
-		# prolly need high level abstraction lists of possible outcomes for all these things
-		# chance of having more than 1 special action is dependent on encounter probability (keep going till false?)
-		# these creatures should have special actions that build on each other, perhaps with words that are related?
+		# GENERATE ACTION ORIENTED ABILITIES NEXT
 		reactionchance = random.random() # chance to have a reaction
 		if reactionchance <= self.PROBABILITY:
 			self.actions['Reaction'] = 'This creature can ' + random.choice(REACTIONS) + ' once per round'
 
-		# grant at least one special actions
+		# grant at least two special actions
 		i = 1
 		tempspeciallist = SPECIAL
 		randomspecial = random.choice(tempspeciallist)
@@ -165,12 +160,13 @@ class Enemy:
 		i += 1
 		tempspeciallist.remove(randomspecial)
 
+		# Pick a desperation action, reaction to player's tactics
 		j = 1
 		tempdesplist = DESPRERATION
 		randomdesp = random.choice(tempdesplist)
 		self.desperationactions['Desperation Action ' + str(j)] = 'This creature may ' + str(randomdesp) + ' once per combat'
 
-
+		# how many special actions can a lad have :?
 		while(True):
 			morespecialchance = random.random()
 			if morespecialchance <= self.PROBABILITY:
@@ -180,13 +176,12 @@ class Enemy:
 				tempspeciallist.remove(randomspecial)
 			else:
 				break
-		# now pick a desperation action TODO
-		# print(self.actions)
 
 		return
 
 	def generate_stats(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY, STAT):
 		# generate profbonus and statmods
+		# note to self: need to find a better way to generate good and bad stats
 		self.profbonus = random.randint(self.MIN, self.MAX) + ENCOUNTER_DIFFICULTY
 		statlist = STAT
 		random.shuffle(statlist)
@@ -199,13 +194,13 @@ class Enemy:
 		for stat in self.badstats:
 			mod = random.randint(self.MIN, self.MAX) - random.randint(self.MIN, self.MAX)
 			self.statmods[stat] = mod
-		# print(self.statmods)
 		return
 
 	def generate_info(self, AVG_PARTY_LEVEL, ENCOUNTER_DIFFICULTY):
+		# generate basic statblock stats
 		self.hp = random.randint(self.MIN, self.MAX) * AVG_PARTY_LEVEL * ENCOUNTER_DIFFICULTY
 		self.DC = 8 + math.ceil(random.randint(self.MIN, self.MAX)/2) + ENCOUNTER_DIFFICULTY
-		# need to change above formulae, they break down at higher levels
+		# need to change above formulae, they break down at higher levels a little bit
 		self.move = random.choice([self.move + 5*ENCOUNTER_DIFFICULTY, self.move - 5*ENCOUNTER_DIFFICULTY, self.move])
 		self.AC = 8 + random.randint(self.MIN, self.MAX)
 
