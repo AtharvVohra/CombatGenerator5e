@@ -106,7 +106,7 @@ class Enemy:
 			self.MAX = 7
 			self.PROBABILITY = 0.1
 			roll_oof = random.random()
-			if roll_oof <= self.PROBABILITY/(3-self.ENCOUNTER_DIFFICULTY):
+			if roll_oof <= self.PROBABILITY/(3-ENCOUNTER_DIFFICULTY):
 				self.resistances.append("All")
 			self.multiattack = 2
 		elif ENCOUNTER_DIFFICULTY == 3:
@@ -114,14 +114,16 @@ class Enemy:
 			self.MAX = 9
 			self.PROBABILITY = 0.2
 			self.multiattack = 3
-			if roll_oof <= self.PROBABILITY/(3-self.ENCOUNTER_DIFFICULTY):
+			roll_oof = random.random()
+			if roll_oof <= self.PROBABILITY:
 				self.resistances.append("All")
 		elif ENCOUNTER_DIFFICULTY == 4: # fucking lol
 			self.MIN = random.randint(1, 8)
 			self.MAX = random.randint(self.MIN, 10)
 			self.PROBABILITY = random.random()
 			self.multiattack = random.randint(1, self.MAX)
-			if roll_oof <= self.PROBABILITY/(3-self.ENCOUNTER_DIFFICULTY):
+			roll_oof = random.random()
+			if roll_oof <= self.PROBABILITY/(3-ENCOUNTER_DIFFICULTY):
 				self.resistances.append("All")
 		else:
 			print("Incorrect input, obey the instructions...")
@@ -211,7 +213,7 @@ class Enemy:
 		for data in DamageType:
 			roll_res = random.random()
 			roll_vul = random.random()
-			if roll_res <= self.PROBABILITY*self.ENCOUNTER_DIFFICULTY:
+			if roll_res <= self.PROBABILITY*ENCOUNTER_DIFFICULTY:
 				if "All" not in self.resistances:
 					self.resistances.append(data.value)
 			if roll_vul <= (self.PROBABILITY):
