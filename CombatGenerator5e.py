@@ -211,7 +211,7 @@ class Enemy:
 		for data in DamageType:
 			roll_res = random.random()
 			roll_vul = random.random()
-			if roll_res <= self.PROBABILITY*2:
+			if roll_res <= self.PROBABILITY*self.ENCOUNTER_DIFFICULTY:
 				if "All" not in self.resistances:
 					self.resistances.append(data.value)
 			if roll_vul <= (self.PROBABILITY):
